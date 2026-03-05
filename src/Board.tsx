@@ -16,11 +16,23 @@ export default function Board() {
     }
   }
 
+  function resetGame(): void {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell): void => {
+      cell.textContent = "";
+    });
+    setActivePlayer("X");
+  }
+
   return (
-    <div className="board" onClick={cellClicked}>
-      {[...Array(9)].map((_, i): JSX.Element => (
-        <div key={i} className="cell" />
-      ))}
-    </div>
+    <>
+      <div className="active-player">Active Player: {activePlayer}</div>
+      <div className="action"><button type="button" onClick={resetGame}>Reset Game</button></div>
+      <div className="board" onClick={cellClicked}>
+        {[...Array(9)].map((_, i): JSX.Element => (
+          <div key={i} className="cell" />
+        ))}
+      </div>
+    </>
   );
 }
