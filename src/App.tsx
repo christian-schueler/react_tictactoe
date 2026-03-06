@@ -1,11 +1,14 @@
 import './App.css';
-import Board from './Board';
+import { Board } from './Board';
 
 const App = () => {
   return (
-    <div className="content">
-      <Board />
-    </div>
+    <>
+      <title>Tic Tac Toe</title>
+      <div className="content">
+        <Board />
+      </div>
+    </>
   );
 };
 

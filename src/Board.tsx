@@ -1,10 +1,10 @@
-import { useState, type JSX } from "react";
-import "./Board.css";
+import { useState, type JSX } from 'react';
+import './Board.css';
 
-export default function Board() {
-  const [activePlayer, setActivePlayer] = useState((): string => "X");
-  let playerX: number[] = [];
-  let playerO: number[] = [];
+export function Board() {
+  const [activePlayer, setActivePlayer] = useState((): string => 'X');
+  const [playerX, setPlayerX] = useState((): number[] => []);
+  const [playerO, setPlayerO] = useState((): number[] => []);
 
   const winningComibinations: number[][] = [
     [0, 1, 2],
@@ -18,59 +18,65 @@ export default function Board() {
   ];
 
   function setActivePlayerNext(): void {
-    setActivePlayer((prev): string => (prev === "X" ? "O" : "X"));
+    setActivePlayer((prev): string => (prev === 'X' ? 'O' : 'X'));
   }
 
   function cellClicked(e: React.MouseEvent<HTMLDivElement>): void {
     const cell = e.target as HTMLDivElement;
-    if (cell.textContent === "") {
+    if (cell.textContent === '') {
       cell.textContent = activePlayer;
-      if (activePlayer === "X") {
-        playerX = [...playerX, parseInt(cell.dataset.key)];
-        playerX.sort((a, b): number => a - b);
+      if (activePlayer === 'X') {
+        setPlayerX((prev) => [...prev, parseInt(cell.dataset.key ?? '')]);
       } else {
-        playerO = [...playerO, parseInt(cell.dataset.key)]);
-        playerO.sort((a, b): number => a - b);
+        setPlayerO((prev) => [...prev, parseInt(cell.dataset.key ?? '')]);
       }
-      setActivePlayerNext();
-console.log(playerX);
-console.log(playerO);
+
       // calculate if winning condition is met
       // check only, if minum 3 moves of the current player have been made
-      if ((playerX.length >= 3)
-          || (playerO.length >= 3)) {
+      if (playerX.length >= 3 || playerO.length >= 3) {
         let hasWon = false;
-        if (activePlayer === "X") {
-          hasWon = winningComibinations.some((combination): boolean => combination.every((num): boolean => playerX.includes(num)));
+        if (activePlayer === 'X') {
+          hasWon = winningComibinations.some((combination): boolean =>
+            combination.every((num): boolean => playerX.includes(num)),
+          );
         } else {
-          hasWon = winningComibinations.some((combination): boolean => combination.every((num): boolean => playerO.includes(num)));
+          hasWon = winningComibinations.some((combination): boolean =>
+            combination.every((num): boolean => playerO.includes(num)),
+          );
         }
         if (hasWon) {
           alert(`Player ${activePlayer} wins!`);
           resetGame();
         }
       }
+      setActivePlayerNext();
     }
   }
 
   function resetGame(): void {
-    const cells = document.querySelectorAll(".cell");
+    const cells = document.querySelectorAll('.cell');
     cells.forEach((cell): void => {
-      cell.textContent = "";
+      cell.textContent = '';
     });
     setPlayerX([]);
     setPlayerO([]);
-    setActivePlayer("X");
+    setActivePlayer('X');
   }
 
   return (
     <>
       <div className="active-player">Active Player: {activePlayer}</div>
-      <div className="action"><button type="button" onClick={resetGame}>Reset Game</button></div>
+      <div className="action">
+        <button type="button" onClick={resetGame}>
+          Reset Game
+        </button>
+      </div>
       <div className="board" onClick={cellClicked}>
-        {[...Array(9)].map((_, i): JSX.Element => (
-          <div key={i} data-key={i} className="cell" />
-        ))}
+        {[...Array(9)].map(
+          (_, i): JSX.Element => (
+            <div key={i} data-key={i} className="cell" />
+          ),
+        )}
       </div>
     </>
   );
